@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var nodemailer = require("nodemailer");
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -30,6 +31,39 @@ app.use('/users', users);
 app.use('/contact', contact);
 app.use('/events', events);
 app.use('/team', team);
+
+//NodeMailer
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  port: 465,
+  auth: {
+    user: 'ceonotifications@gmail.com', //email is not real; use your own email to test
+    pass: 'abc12345@'  //use your own password for email to test
+  }
+});
+
+app.get('/', function(req,res){
+  res.sendfile("./views/partials/footer.ejs");
+})
+
+app.post('/postCEO', function(req,res){
+  var mailOptions = {
+  from: '<ceonotifications@gmail.com>', // sender address- email is not real; use your own email to test
+  to: 'sixsampro@gmail.com', // list of receivers
+  subject: 'You have received feedback from Baruch CEO Website!', // Subject line
+  text: "User: " + req.body.name + " <" + req.body.email + ">" + "\n\n" + "Comment:" + req.body.message}
+
+  console.log(mailOptions);
+  transporter.sendMail(mailOptions,function(error,response){
+    if(error){
+      res.end("Message could not be sent.");
+    }
+    else{
+      res.end("Message Sent. Thanks!");
+    }
+  })
+  res.redirect("/contact");
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
