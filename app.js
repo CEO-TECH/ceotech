@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var contact = require('./routes/contact');
 var events = require('./routes/events');
 var team = require('./routes/team');
+var about = require('./routes/about')
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/users', users);
 app.use('/contact', contact);
 app.use('/events', events);
 app.use('/team', team);
+app.use('/about', about);
 
 //NodeMailer
 var transporter = nodemailer.createTransport({
